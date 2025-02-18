@@ -1,0 +1,14 @@
+flask
+render_template
+redirect
+url_for
+request
+flash
+session
+flask_sqlalchemy
+SQLAlchemy
+werkzeug.security 
+generate_password_hash
+check_password_hash
+import os
+import random

@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Speaking Exercise - LinguaLearn</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #6C63FF;
+            --secondary-color: #3F3D56;
+            --accent-color: #F50057;
+            --background-color: #F0F0F0;
+            --text-color: #333333;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            line-height: 1.6;
+            color: var(--text-color);
+            background-color: var(--background-color);
+        }
+
+        .container {
+            width: 90%;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 1rem;
+        }
+
+        header {
+            background-color: white;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            padding: 1rem 0;
+            margin-bottom: 2rem;
+        }
+
+        h1 {
+            color: var(--primary-color);
+            text-align: center;
+        }
+
+        .exercise-card {
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            padding: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .instruction {
+            font-size: 1.2rem;
+            margin-bottom: 1rem;
+        }
+
+        .phrase {
+            font-size: 1.5rem;
+            font-weight: bold;
+            margin-bottom: 1rem;
+            color: var(--secondary-color);
+        }
+
+        .button-group {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 2rem;
+        }
+
+        .button {
+            display: inline-block;
+            background-color: var(--primary-color);
+            color: white;
+            padding: 0.5rem 1rem;
+            text-decoration: none;
+            border-radius: 4px;
+            transition: background-color 0.3s ease;
+        }
+
+        .button:hover {
+            background-color: #5A52D5;
+        }
+
+        .button.secondary {
+            background-color: var(--secondary-color);
+        }
+
+        .button.secondary:hover {
+            background-color: #2E2C40;
+        }
+
+        .audio-controls {
+            display: flex;
+            justify-content: center;
+            margin: 1rem 0;
+        }
+
+        .audio-button {
+            background-color: var(--accent-color);
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            margin: 0 0.5rem;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .audio-button:hover {
+            background-color: #D50000;
+        }
+
+        #recordedAudio {
+            width: 100%;
+            margin-top: 1rem;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <h1>Speaking Exercise</h1>
+        </div>
+    </header>
+
+    <main class="container">
+        <div class="exercise-card">
+            <div class="instruction">
+                Listen to the phrase and repeat it:
+            </div>
+            <div class="phrase">
+                "¿Cómo estás?" (How are you?)
+            </div>
+            <div class="audio-controls">
+                <button class="audio-button" id="playButton">Play Audio</button>
+                <button class="audio-button" id="recordButton">Record</button>
+                <button class="audio-button" id="stopButton" disabled>Stop</button>
+            </div>
+            <audio id="recordedAudio" controls></audio>
+            <div class="button-group">
+                <a href="#" class="button secondary">Try Again</a>
+                <a href="#" class="button">Next</a>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        // Simple JavaScript to handle audio playback and recording
+        const playButton = document.getElementById('playButton');
+        const recordButton = document.getElementById('recordButton');
+        const stopButton = document.getElementById('stopButton');
+        const audioPlayer = document.getElementById('recordedAudio');
+
+        let mediaRecorder;
+        let audioChunks = [];
+
+        playButton.addEventListener('click', () => {
+            // In a real app, this would play the phrase audio
+            console.log('Playing audio');
+        });
+
+        recordButton.addEventListener('click', async () => {
+            audioChunks = [];
+            const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+            mediaRecorder = new MediaRecorder(stream);
+            mediaRecorder.start();
+
+            mediaRecorder.addEventListener("dataavailable", event => {
+                audioChunks.push(event.data);
+            });
+
+            recordButton.disabled = true;
+            stopButton.disabled = false;
+        });
+
+        stopButton.addEventListener('click', () => {
+            mediaRecorder.stop();
+            recordButton.disabled = false;
+            stopButton.disabled = true;
+
+            mediaRecorder.addEventListener("stop", () => {
+                const audioBlob = new Blob(audioChunks);
+                const audioUrl = URL.createObjectURL(audioBlob);
+                audioPlayer.src = audioUrl;
+            });
+        });
+    </script>
+</body>
+</html>
